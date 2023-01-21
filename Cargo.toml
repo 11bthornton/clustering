@@ -1,0 +1,22 @@
+[package]
+name = "cluster-test"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+seq_io              = "0.3.1"
+log                 = "0.4.17"
+bio                 = "1.1.0"
+itertools           = "*"
+rayon               = "*"
+csv                 = "1.1.6"
+serde               = { version = "1.0", features = ["derive"] }
+serde_arrays        = "0.1.0"
+serde_json          = "1.0"
+serde_json_any_key  = "*"
+clap                = { version = "*", features = ["derive"]}
+
+[profile.release]
+opt-level = 3
