@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 
+
 pub mod sequence {
     // Fixed array sizes help things go a bit quicker.
     // Also we only need to deal with bytes and not strings/characters.
@@ -8,8 +9,27 @@ pub mod sequence {
         fmt::{
             Debug, Display
         },
-        ops::Deref, array::TryFromSliceError
+        ops::Deref, array::TryFromSliceError, collections::HashMap
     };
+
+    use lazy_static::lazy_static;
+
+    lazy_static! {
+        static ref QUAL_LOOKUP: HashMap<char, f64> = {
+            {
+                let mut lookup : HashMap<char, f64> = HashMap::new();
+
+                for i in 0u8..43 {
+
+                    let c: char = (i + 33) as char;
+
+                    lookup.insert(c, 10f64.powf(i as f64 / 10f64) as f64);
+                }
+
+                lookup
+            }
+        };
+    }
 
     use bio::alignment::{
         pairwise::Aligner, 
@@ -78,6 +98,19 @@ pub mod sequence {
                 .filter(|char| **char == b'N')
                 .collect_vec()
                 .len() as f32 / (N as f32)
+        }
+
+        pub fn calculate_quality(&self) -> f64 {
+            let mut total : f64 = 0.0;
+
+            for thing in self.0 {
+
+                let as_char = (thing + 33) as char;
+
+                total += QUAL_LOOKUP[&as_char];
+            }
+
+            total
         }
 
         pub fn to_protein(&self) -> Sequence<{N / 3}> {

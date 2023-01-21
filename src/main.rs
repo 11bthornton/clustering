@@ -73,6 +73,8 @@ fn main() -> Result<(), ()> {
                     );
                 }
 
+                println!("UMI qual: {}", umi.calculate_quality());
+
                 *umicdrmap
                     .entry(umi.clone())
                     .or_default()
